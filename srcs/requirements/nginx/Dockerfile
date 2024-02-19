@@ -1,19 +1,23 @@
 FROM debian:buster
 
-RUN apt-get update && apt-get install -y ngnix openssl
+RUN apt-get update
+
+RUN apt-get install -y nginx openssl vim curl
 
 RUN mkdir /etc/nginx/ssl
 
-RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+RUN openssl req -x509 -nodes \
 	-out /etc/nginx/ssl/aennaki.crt -keyout /etc/nginx/ssl/aennaki.key \
-	-subj "/C=MO/L=KH/O=42School/OU=aennaki/CN=aennaki/"
+	-subj "/C=MO/L=KH/O=42School/OU=aennaki/CN=aennaki.42.fr"
 
-COPY ./conf/nginx.conf /etc/nginx/conf.d
-
-RUN mkdir -p /run/nginx
+RUN mkdir -p /var/run/nginx
 
 EXPOSE 443
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
+RUN chmod 755 /var/www/html \
+	&& chown -R www-data:www-data /var/www/html
+
+CMD [ "nginx", "-g", "daemon off;" ]
 

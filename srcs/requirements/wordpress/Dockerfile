@@ -1,36 +1,22 @@
 FROM debian:buster
 
-RUN apt-get update && apt-get -y install \
-	wget \
-	curl \
-	bash \
-	php \
-	php-cgi \
-	php-mysql \
+RUN apt-get update && apt-get -y install wget \
+	php7.3 \
 	php-fpm \
-	php-pdo \
-	php-gd php-cli \
-	php-mbstring \
-	redis \
-	php-redis \
-	&& rm -rf /var/lib/apt/lists/*
+	php-mysql \
+	mariadb-client
+	
+RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-	&& chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
 
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
+RUN chown -R root:root /var/www/wordpress
 
-RUN mkdir /run/php
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
-COPY ./tools/create_wordpress.sh /usr/local/bin/
+RUN chmod +x wp-cli.phar
 
-RUN chmod +x /usr/local/bin/create_wordpress.sh
-
-ENTRYPOINT ["/usr/local/bin/create_wordpress.sh"]
-
-WORKDIR /var/www/html/
+RUN mv wp-cli.phar /usr/local/bin/wp
 
 EXPOSE 9000
-
-CMD ["/usr/sbin/php-fpm7.3", "-F"]
 
