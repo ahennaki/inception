@@ -1,22 +1,16 @@
 FROM debian:buster
 
-RUN apt-get update && apt-get -y install wget \
-	php7.3 \
-	php-fpm \
-	php-mysql \
-	mariadb-client
-	
-RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
+ARG dbname=mydata
+ARG dbuser=$MYSQL_USER
+ARG dbpass=$MYSQL_PASSWORD
+ARG dbhost=mariadb
+ARG dbprefix=wp_
 
-RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
+RUN apt update && apt-get install -y php-fpm php-mysql vim curl
 
-RUN chown -R root:root /var/www/wordpress
-
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-
-RUN chmod +x wp-cli.phar
-
-RUN mv wp-cli.phar /usr/local/bin/wp
+WORKDIR /var/www/html
+COPY tools/wp_cnf.sh /var/www/html/
 
 EXPOSE 9000
 
+ENTRYPOINT [ "/bin/sh", "/var/www/html/wp_cnf.sh" ]

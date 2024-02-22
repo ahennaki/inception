@@ -1,12 +1,18 @@
 FROM debian:buster
 
-RUN apt-get update && apt-get install mariadb-server -y
+ARG MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+ARG MYSQL_USER=$MYSQL_USER
+ARG MYSQL_PASSWORD=$MYSQL_PASSWORD
 
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN apt-get update && apt-get install -y mariadb-server
 
-COPY tools/mysql.sh /usr/local/bin/mysql.sh
+WORKDIR /etc/mysql/mariadb.conf.d
 
-RUN chmod +x /usr/local/bin/mysql.sh
+COPY tools/mysql_cnf.sh /etc/mysql/
 
-ENTRYPOINT [ "/usr/local/bin/mysql.sh" ]
+RUN  /bin/sh /etc/mysql/mysql_cnf.sh
+
+EXPOSE 3306
+
+CMD [ "mysqld_safe" ]
 
