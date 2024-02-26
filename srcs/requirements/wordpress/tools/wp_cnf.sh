@@ -8,15 +8,27 @@ chmod +x wp-cli.phar
 
 mv wp-cli.phar /usr/local/bin/wp
 
-sed -i -e 's/listen =.*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
-
 wp --allow-root core download
+
 
 wp core config --dbname=mydata --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=mariadb --dbprefix=wp_ --allow-root --skip-check
 
-wp --allow-root  core install --url="https://aennaki.42.fr" --title="My Site" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="aennaki@email.com"
+wp --allow-root  core install --url="https://aennaki.42.fr" --title="Site" --admin_user=$ADMIN_USER --admin_password=$ADMIN_PASSWORD --admin_email="ahmed.ennaki@email.com"
 
-wp theme install ultrabootstrap --activate --allow-root
+# #Download wordpress and all config file
+# wget http://wordpress.org/latest.tar.gz
+# tar xfz latest.tar.gz
+# mv wordpress/* .
+# rm -rf latest.tar.gz
+# rm -rf wordpress
 
-groupadd www-pub 
-usermod -a -G www-pub www-data
+# #Inport env variables in the config file
+# sed -i "s/username_here/$MYSQL_USER/g" wp-config-sample.php
+# sed -i "s/password_here/$MYSQL_PASSWORD/g" wp-config-sample.php
+# sed -i "s/localhost/mariadb/g" wp-config-sample.php
+# sed -i "s/database_name_here/mydata/g" wp-config-sample.php
+# cp wp-config-sample.php wp-config.php
+
+sed -i -e 's/listen =.*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
+
+php-fpm7.3 -F

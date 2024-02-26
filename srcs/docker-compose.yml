@@ -1,21 +1,6 @@
-version: '3'
-services:
+version: '3.8'
 
-    
-    nginx:
-      build:
-        context: ./requirements/nginx
-      image: nginx
-      container_name: nginx
-      ports:
-      - 443:443
-      volumes:
-      - wordpress:/var/www/html
-      restart: always
-      depends_on:
-      - wordpress
-      networks: 
-      - my_network
+services:
 
     mariadb:
       build: 
@@ -28,7 +13,7 @@ services:
       container_name: mariadb
       env_file: .env
       volumes:
-        - db:/var/lib/mysql
+        - database:/var/lib/mysql
       restart: always
       networks: 
       - my_network
@@ -43,22 +28,39 @@ services:
            ADMIN_PASSWORD: $ADMIN_PASSWORD
       image: wordpress
       container_name: wordpress
+      # ports:
+      #   - 9000:9000
       restart: always
       depends_on:
       - mariadb
       volumes:
-      - wordpress:/var/www/html
+      - wordpress_d:/var/www/html/
       env_file: .env
+      networks: 
+      - my_network
+    
+    nginx:
+      build:
+        context: ./requirements/nginx
+      image: nginx
+      container_name: nginx
+      ports:
+      - 443:443
+      volumes:
+      - wordpress_d:/var/www/html/
+      restart: always
+      depends_on:
+      - wordpress
       networks: 
       - my_network
 
 volumes:
-  db:
+  database:
     driver_opts:
       type: none
       o: bind
-      device: /home/aennaki/data/db
-  wordpress:
+      device: /home/aennaki/data/database
+  wordpress_d:
     driver_opts:
       type: none
       o: bind
