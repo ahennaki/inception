@@ -3,14 +3,14 @@ version: '3.8'
 services:
 
     mariadb:
+      container_name: mariadb
+      image: mariadb
       build: 
         context: ./requirements/mariadb
         args:
           MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
           MYSQL_USER: $MYSQL_USER
           MYSQL_PASSWORD: $MYSQL_PASSWORD
-      image: mariadb
-      container_name: mariadb
       env_file: .env
       volumes:
         - database:/var/lib/mysql
@@ -19,17 +19,15 @@ services:
       - my_network
 
     wordpress:
+      container_name: wordpress
+      image: wordpress
       build: 
        context: ./requirements/wordpress
        args:
            MYSQL_USER: $MYSQL_USER
            MYSQL_PASSWORD: $MYSQL_PASSWORD
            ADMIN_USER: $ADMIN_USER
-           ADMIN_PASSWORD: $ADMIN_PASSWORD
-      image: wordpress
-      container_name: wordpress
-      # ports:
-      #   - 9000:9000
+           ADMIN_PASSWORD: $ADMIN_PASSWORD 
       restart: always
       depends_on:
       - mariadb
@@ -40,12 +38,12 @@ services:
       - my_network
     
     nginx:
+      container_name: nginx
+      image: nginx
       build:
         context: ./requirements/nginx
-      image: nginx
-      container_name: nginx
       ports:
-      - 443:443
+      - "443:443"
       volumes:
       - wordpress_d:/var/www/html/
       restart: always
@@ -55,11 +53,13 @@ services:
       - my_network
 
 volumes:
+
   database:
     driver_opts:
       type: none
       o: bind
       device: /home/aennaki/data/database
+
   wordpress_d:
     driver_opts:
       type: none
@@ -67,6 +67,7 @@ volumes:
       device: /home/aennaki/data/wordpress
 
 networks:
+
   my_network:
     driver: bridge
 

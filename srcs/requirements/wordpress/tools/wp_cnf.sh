@@ -11,7 +11,7 @@ mv wp-cli.phar /usr/local/bin/wp
 wp --allow-root core download
 
 
-wp core config --dbname=mydata --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=mariadb --dbprefix=wp_ --allow-root --skip-check
+wp --allow-root core config --dbname=mydata --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=mariadb
 
 wp --allow-root  core install --url="https://aennaki.42.fr" --title="Site" --admin_user=$ADMIN_USER --admin_password=$ADMIN_PASSWORD --admin_email="ahmed.ennaki@email.com"
 
