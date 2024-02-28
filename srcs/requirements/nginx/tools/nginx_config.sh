@@ -20,9 +20,9 @@ sed -i "s/server_name _;/server_name aennaki.42.fr;/"																			/etc/ngi
 sed -i "57i location ~ \\.php$ {" 																								/etc/nginx/sites-enabled/default
 sed -i "58i      include snippets/fastcgi-php.conf;" 																			/etc/nginx/sites-enabled/default
 sed -i "59i       fastcgi_pass wordpress:9000;" 																				/etc/nginx/sites-enabled/default
+sed -i "60i		}"																												/etc/nginx/sites-enabled/default
 # sed -i "59i      #fastcgi_pass unix:/run/php/php7.4-fpm.sock;"                                         							/etc/nginx/sites-enabled/default
 # sed -i "61i       include fastcgi_params;" 																				/etc/nginx/sites-enabled/default
 # sed -i "62i       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;" 																				/etc/nginx/sites-enabled/default
-sed -i "60i		}"																												/etc/nginx/sites-enabled/default
 
 # nginx -g "daemon off;"
