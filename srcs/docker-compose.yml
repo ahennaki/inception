@@ -23,11 +23,6 @@ services:
       image: wordpress
       build: 
        context: ./requirements/wordpress
-       args:
-           MYSQL_USER: $MYSQL_USER
-           MYSQL_PASSWORD: $MYSQL_PASSWORD
-           ADMIN_USER: $ADMIN_USER
-           ADMIN_PASSWORD: $ADMIN_PASSWORD 
       restart: always
       depends_on:
       - mariadb
